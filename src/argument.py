@@ -74,9 +74,16 @@ def add_argument_hf_encoder(parser: ArgumentParser) -> None:
 
 
 def add_argument_openai(parser: ArgumentParser) -> None:
+    """
     parser.add_argument(
         "--model",
         choices=["gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4"],
+        required=True,
+    )
+    """
+    parser.add_argument(
+        "--model",
+        choices=["gemini-1.5-pro", "gemini-1.5-flash"],
         required=True,
     )
     parser.add_argument(
