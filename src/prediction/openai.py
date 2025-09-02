@@ -20,7 +20,7 @@ from sklearn.metrics import (
 )
 from tenacity import retry, stop_after_attempt, wait_random_exponential
 from tqdm import tqdm
-from transformers.models.bert_japanese import MecabTokenizer
+
 
 from .. import (
     DatasetType,
@@ -392,20 +392,10 @@ def predict(args: Namespace) -> None:
                 / len(ds_output)
             }
 
-            word_tokenizer = MecabTokenizer(mecab_dic="ipadic")
+            
 
             def tokenize_text(span: str) -> List[str]:
-                if dataset_enum == DatasetType.jpfinresults:
-                    return word_tokenizer.tokenize(span)
-                elif dataset_enum in (
-                    DatasetType.altlex,
-                    DatasetType.because,
-                    DatasetType.pdtb,
-                    DatasetType.fincausal,
-                ):
-                    return span.split(" ")
-                else:  # pragma: no cover
-                    raise NotImplementedError()
+                return span.split(" ")
 
             def compute_f1_score(
                 true_span: str, pred_span: str
