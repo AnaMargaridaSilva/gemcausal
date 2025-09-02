@@ -231,10 +231,14 @@ def predict(args: Namespace) -> None:
 
     # Gemini API call
     logger.info("Inference starts")
+    batch_size = 10  # or any number that fits your quota
     lst_output: list[str] = []
-    for prompt in tqdm(ds_test["prompt"]):
-        completion = completion_with_backoff(model, prompt)
-        lst_output.append(completion.text)
+    
+    for i in tqdm(range(0, len(ds_test), batch_size)):
+        batch_prompts = ds_test["prompt"][i:i + batch_size]
+        batch_results = [completion_with_backoff(model, p).text for p in batch_prompts]
+        lst_output.extend(batch_results)
+    
     logger.info("Inference ends")
     ds_test = ds_test.add_column("output", lst_output)
 
