@@ -65,11 +65,11 @@ def get_bio(text_w_pairs: str) -> tuple[list[str], list[str]]:
 def get_bio_for_datasets(example: dict[str, Any]) -> dict[str, Any]:
     tokens: list[str]
     tags: list[str]
-    tokens, tags = get_bio(example["text_w_pairs"])
+    tokens, tags = get_bio(example["causal_text_w_pairs"])
     example["tokens"] = tokens
     example["tags"] = tags
     example["tagged_text"] = (
-        example["text_w_pairs"]
+        example["causal_text_w_pairs"]
         .replace("<ARG0>", SpanTags.cause_begin)
         .replace("</ARG0>", SpanTags.cause_end)
         .replace("<ARG1>", SpanTags.effect_begin)
@@ -93,7 +93,7 @@ def custom_agg(group: Any) -> pd.Series:
                 np.argsort(
                     [
                         -(x.find(SpanTags.cause_begin))
-                        for x in group["text_w_pairs"].tolist()
+                        for x in group["causal_text_w_pairs"].tolist()
                     ]
                 )
             ):
