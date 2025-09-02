@@ -236,8 +236,8 @@ def load_data_CNC(
     # train_val_data_path: str = os.path.join(data_dir, f"{dataset_path_prefix}_train.csv")
     # test_data_path: str = os.path.join(data_dir, f"{dataset_path_prefix}_test.csv")
 
-    train_file = os.path.join(data_dir, "train_subtask2_grouped.csv")
-    test_file = os.path.join(data_dir, "dev_subtask2_grouped.csv")
+    train_val_data_path: str = os.path.join(data_dir, "train_subtask2_grouped.csv")
+    test_data_path: str = os.path.join(data_dir, "dev_subtask2_grouped.csv")
 
     ds_train_val: Dataset
     ds_test: Dataset
