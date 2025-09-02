@@ -231,7 +231,7 @@ def predict(args: Namespace) -> None:
 
     # Gemini API call
     logger.info("Inference starts")
-    batch_size = 10  # or any number that fits your quota
+    batch_size = 5  # or any number that fits your quota
     lst_output: list[str] = []
     
     for i in tqdm(range(0, len(ds_test), batch_size)):
