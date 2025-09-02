@@ -307,7 +307,7 @@ def predict(args: Namespace) -> None:
             )
             result["exact_match"] = sum(
                 [t == p for t, p in zip(ds_output["tags"], ds_output["pred"])]
-            ) / len(ds_output)
+            ) 
             ds_output = ds_output.remove_columns(
                 list(
                     set(ds_test.column_names)
@@ -389,7 +389,7 @@ def predict(args: Namespace) -> None:
                         )
                     ]
                 )
-                / len(ds_output)
+                
             }
 
             
