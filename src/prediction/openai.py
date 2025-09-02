@@ -1,4 +1,5 @@
 import datetime
+import time
 import itertools
 import json
 import os
@@ -231,13 +232,18 @@ def predict(args: Namespace) -> None:
 
     # Gemini API call
     logger.info("Inference starts")
-    batch_size = 5  # or any number that fits your quota
+    batch_size = 5  # adjust according to your quota
     lst_output: list[str] = []
     
     for i in tqdm(range(0, len(ds_test), batch_size)):
         batch_prompts = ds_test["prompt"][i:i + batch_size]
         batch_results = [completion_with_backoff(model, p).text for p in batch_prompts]
         lst_output.extend(batch_results)
+        
+        # Wait 60 seconds before processing the next batch
+        if i + batch_size < len(ds_test):
+            logger.info("Waiting 60 seconds before the next batch...")
+            time.sleep(60)
     
     logger.info("Inference ends")
     ds_test = ds_test.add_column("output", lst_output)
