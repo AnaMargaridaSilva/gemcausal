@@ -18,6 +18,7 @@ DatasetType: EnumMeta = Enum(
         "reco",
         "semeval",
         "all",
+        "cnc",
     ),
 )
 TaskType: EnumMeta = Enum(
