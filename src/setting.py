@@ -46,6 +46,7 @@ DatasetTaskPairs: tuple[tuple[Enum, tuple[Enum]]] = (
     (DatasetType.reco, (TaskType.chain_classification,)),
     (DatasetType.semeval, (TaskType.sequence_classification,)),
     (DatasetType.all, (TaskType.sequence_classification, TaskType.span_detection)),
+    (DatasetType.cnc, (TaskType.sequence_classification, TaskType.span_detection)),
 )
 
 
