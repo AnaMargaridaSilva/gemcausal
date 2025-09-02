@@ -83,7 +83,7 @@ def add_argument_openai(parser: ArgumentParser) -> None:
     """
     parser.add_argument(
         "--model",
-        choices=["gemini-1.5-pro", "gemini-1.5-flash"],
+        choices=["gemini-1.5-pro", "gemini-1.5-flash", "gemini-2.5-flash", "gemini-2.5-pro"],
         required=True,
     )
     parser.add_argument(
