@@ -4,6 +4,7 @@ from typing import Optional, List, Set, Tuple
 
 from datasets import Dataset, DatasetDict, concatenate_datasets
 
+from .CausalNewsCorpus import load_data_CNC
 from .fincausal import load_data_fincausal
 from .japanese import load_data_jpfin
 from .unicausal import load_data_unicausal
@@ -92,6 +93,20 @@ def load_dataset_for_corpus(
         ds_valid = load_reco_dataset(os.path.join(reco_dir, "dev.json"))
         ds_test = load_reco_dataset(os.path.join(reco_dir, "test.json"))
 
+    elif dataset_enum == DatasetType.cnc:
+        ds_train: Dataset
+        ds_valid: Dataset
+        ds_test: Dataset
+        ds_train, ds_valid, ds_test = load_data_CNC(
+            dataset_enum,
+            task_enum,
+            sentencetype_enum,
+            numcausal_enum,
+            plicit_enum,
+            data_dir,
+            seed,
+        )
+
     elif dataset_enum == DatasetType.all:
         if task_enum == TaskType.sequence_classification:
             train_dataset_list = [
@@ -102,9 +117,10 @@ def load_dataset_for_corpus(
                 "pdtb",
                 "semeval",
                 "fincausal",
+                "cnc",
             ]
         elif task_enum == TaskType.span_detection:
-            train_dataset_list = ["altlex", "because", "pdtb", "fincausal"]
+            train_dataset_list = ["altlex", "because", "pdtb", "fincausal", "cnc"]
         else:  # pragma: no cover
             raise NotImplementedError()
 
