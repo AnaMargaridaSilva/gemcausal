@@ -201,6 +201,7 @@ def predict(args: Namespace) -> None:
                 cause_spans = line.replace("Causes:", "")
             elif "Effects:" in line:
                 effect_spans = line.replace("Effects:", "")
+        logger.info(f"Columns before mapping: {ds_test.column_names}")
         true_causes, true_effects = extract_all_causes_effects(example["causal_text_w_pairs"])
         example["true_cause"] = " ; ".join(true_causes)
         example["true_effect"] = " ; ".join(true_effects)
@@ -208,7 +209,7 @@ def predict(args: Namespace) -> None:
         example["pred_effect"] = remove_marks(effect_spans)
         return example
 
-    print("Columns before mapping:", ds_test.column_names)
+    logger.info(f"Columns before mapping: {ds_test.column_names}")
 
     ds_output = ds_test.map(extract_span)
     
