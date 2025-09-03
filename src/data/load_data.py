@@ -11,7 +11,7 @@ from .unicausal import load_data_unicausal
 from .reco import load_reco_dataset
 from .. import DatasetType, PlicitType, TaskType, assert_dataset_task_pair, logger
 
-
+"""
 def get_columns_for_task(task_enum: Enum, dataset_enum: Enum) -> Set[str]:
     if task_enum == TaskType.sequence_classification:
         return {"example_id", "text", "labels"}
@@ -22,7 +22,18 @@ def get_columns_for_task(task_enum: Enum, dataset_enum: Enum) -> Set[str]:
             return {"example_id", "events", "short_contexts", "labels"}
     else:  # pragma: no cover
         raise NotImplementedError()
-
+"""
+def get_columns_for_task(task_enum: Enum, dataset_enum: Enum) -> Set[str]:
+    if task_enum == TaskType.sequence_classification:
+        return {"example_id", "text", "labels"}
+    elif task_enum == TaskType.span_detection:
+        # Add causal_text_w_pairs to keep it during cleaning
+        return {"example_id", "text", "tokens", "tags", "tagged_text", "causal_text_w_pairs"}
+    elif task_enum == TaskType.chain_classification:
+        if dataset_enum == DatasetType.reco:
+            return {"example_id", "events", "short_contexts", "labels"}
+    else:  # pragma: no cover
+        raise NotImplementedError()
 
 def _convert_example_ids(dataset: Dataset) -> Dataset:
     """cast to int type to match the type when concatenating dataset"""
