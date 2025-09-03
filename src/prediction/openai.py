@@ -143,9 +143,11 @@ def compute_metrics_for_spans(ds_output: Dataset) -> Dict[str, float]:
     cause_metrics = []
     effect_metrics = []
     
+
+
     for true_cause, pred_cause, true_effect, pred_effect in zip(
-        ds_output["true_cause"], ds_output.get("pred_cause", []),
-        ds_output["true_effect"], ds_output.get("pred_effect", [])
+        ds_output["true_cause"], ds_output["pred_cause"],
+        ds_output["true_effect"], ds_output["pred_effect"]
     ):
         exact_matches.append(true_cause.strip() == pred_cause.strip() and true_effect.strip() == pred_effect.strip())
         cause_metrics.append(compute_f1_score(true_cause, pred_cause))
