@@ -111,6 +111,10 @@ def remove_marks(text: str) -> str:
     extracted = re.findall(r"\[([^\]]+)\]", text)
     return " ".join(extracted) if extracted else text
 
+def remove_marks(text: str) -> str:
+    extracted = re.findall(r"\[([^\]]+)\]", text)
+    return " ; ".join(extracted) if extracted else text
+
 def compute_f1_score(true_span: str, pred_span: str) -> Tuple[float, float, float]:
     true_tokens, pred_tokens = set(true_span.split()), set(pred_span.split())
     tp, fp, fn = len(true_tokens & pred_tokens), len(pred_tokens - true_tokens), len(true_tokens - pred_tokens)
