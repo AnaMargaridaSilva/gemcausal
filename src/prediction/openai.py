@@ -273,5 +273,6 @@ def predict(args: Namespace) -> None:
     }}
     filehead = datetime.datetime.now().strftime("%Y%m%d_%H%M_") + f"{args.task_type}_{args.dataset_type}"
     ds_output.to_csv(os.path.join(output_dir, f"{filehead}.csv"))
+    ds_output.to_json(os.path.join(output_dir, f"{filehead}_predictions.json"))
     with open(os.path.join(output_dir, f"{filehead}.json"), "w") as f:
         json.dump(result, f, indent=4, sort_keys=True)
