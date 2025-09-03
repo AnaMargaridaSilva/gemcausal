@@ -216,10 +216,30 @@ def predict(args: Namespace) -> None:
 
     # -------------------- Compute metrics -------------------- #
     result = {}
+    """
     result["exact_match"] = sum(
         [t.strip() == p.strip() for t, p in zip(ds_output["true_cause"] + ds_output["true_effect"],
                                                ds_output["pred_cause"] + ds_output["pred_effect"])]
     )
+    """
+    results_cause = [
+        t.strip() == p.strip()
+        for t, p in zip(ds_output["true_cause"], ds_output["pred_cause"])
+    ]
+    
+    results_effect = [
+        t.strip() == p.strip()
+        for t, p in zip(ds_output["true_effect"], ds_output["pred_effect"])
+    ]
+
+    total_matches = sum(results_cause) + sum(results_effect)
+    total_pairs = len(results_cause) + len(results_effect)
+    accuracy = total_matches / total_pairs if total_pairs > 0 else 0.0
+
+    logger.info("Cause match count: %d / %d", sum(results_cause), len(results_cause))
+    logger.info("Effect match count: %d / %d", sum(results_effect), len(results_effect))
+    logger.info("Overall accuracy: %.2f%%", accuracy * 100)
+
 
     # Cause/Effect F1
     cause_metrics = [compute_f1_score(t, p) for t, p in zip(ds_output["true_cause"], ds_output["pred_cause"])]
