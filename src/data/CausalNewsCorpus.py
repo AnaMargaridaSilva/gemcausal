@@ -136,7 +136,7 @@ def _load_data_CNC_sequence_classification(data_path: str) -> Dataset:
     ds = ds.rename_column("eg_id", "example_id")
     return ds
 
-
+"""
 def _load_data_CNC_span_detection(data_path: str) -> Dataset:
     df: pd.DataFrame = pd.read_csv(data_path)
     # Keep only rows where num_rs > 0
@@ -145,6 +145,22 @@ def _load_data_CNC_span_detection(data_path: str) -> Dataset:
     ds = ds.map(get_bio_for_datasets)
     ds = ds.rename_column("eg_id", "example_id")
     return ds
+"""
+
+def _load_data_CNC_span_detection(data_path: str) -> Dataset:
+    df: pd.DataFrame = pd.read_csv(data_path)
+    # Keep only rows where num_rs > 0
+    df = df[df["num_rs"] > 0]
+    # Ensure the column exists
+    if "causal_text_w_pairs" not in df.columns:
+        df["causal_text_w_pairs"] = ""  # or some default empty list/string
+    ds: Dataset = Dataset.from_pandas(df, preserve_index=False)
+    # Preprocess with BIO tagging
+    ds = ds.map(get_bio_for_datasets)
+    # Rename for consistency
+    ds = ds.rename_column("eg_id", "example_id")
+    return ds
+
 
 
 def _filter_data(
