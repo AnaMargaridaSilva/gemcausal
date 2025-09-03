@@ -21,6 +21,7 @@ from sklearn.metrics import (
 from tenacity import retry, stop_after_attempt, wait_random_exponential
 from tqdm import tqdm
 
+
 from .. import (
     DatasetType,
     NumCausalType,
@@ -30,7 +31,7 @@ from .. import (
     assert_dataset_task_pair,
     logger,
 )
-from ..data.load_data import load_data_CNC as load_data  # use updated loader
+from ..data.load_data import load_data
 from ..setting import assert_filter_option
 
 # -------------------- Helper functions -------------------- #
