@@ -4,6 +4,7 @@ from typing import Any, Union, Optional
 import pandas as pd
 import numpy as np
 from datasets import Dataset, DatasetDict, Value, load_dataset
+from enum import Enum
 
 from .. import (
     DatasetType,
