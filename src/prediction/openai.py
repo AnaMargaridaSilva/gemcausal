@@ -91,6 +91,7 @@ def extract_span(example: Dict[str, Any]) -> Dict[str, Any]:
     example["true_effect"] = true_effect_spans
 
     # Extract predicted spans if 'output' exists
+    """
     if "output" in example:
         output_text = example["output"]
         extracted_spans = re.findall(r"\[([^\]]+)\]", output_text)
@@ -100,6 +101,18 @@ def extract_span(example: Dict[str, Any]) -> Dict[str, Any]:
         example["pred_cause"] = " ".join(extracted_spans[:num_causes]) if extracted_spans else ""
         example["pred_effect"] = " ".join(extracted_spans[num_causes:num_causes+num_effects]) if extracted_spans else ""
 
+    return example
+    """
+    if "output" in example:
+        output_text = example["output"]
+        extracted_spans = re.findall(r"\[([^\]]+)\]", output_text)
+        if len(extracted_spans) >= 2:
+            mid = len(extracted_spans) // 2
+            example["pred_cause"] = " ".join(extracted_spans[:mid])
+            example["pred_effect"] = " ".join(extracted_spans[mid:])
+        else:
+            example["pred_cause"] = ""
+            example["pred_effect"] = ""
     return example
 
 
@@ -253,23 +266,35 @@ def predict(args: Namespace) -> None:
     logger.info("Result: %s", result)
 
     # Save results
-    filehead: str = (
-        datetime.datetime.now().strftime("%Y%m%d_%H%M_") + f"{task_type}_{dataset_type}"
-    )
-    if (
-        filter_num_sent != "all"
-        or filter_num_causal != "all"
-        or filter_plicit_type != "all"
-    ):
-        if filter_num_sent != "all":
-            filehead += f"_{filter_num_sent}"
-        if filter_num_causal != "all":
-            filehead += f"_{filter_num_causal}"
-        if filter_plicit_type != "all":
-            filehead += f"_{filter_plicit_type}"
+    filehead = datetime.datetime.now().strftime("%Y%m%d_%H%M_") + f"{args.task_type}_{args.dataset_type}"
+    if filter_num_sent != "all":
+        filehead += f"_{filter_num_sent}"
+    if filter_num_causal != "all":
+        filehead += f"_{filter_num_causal}"
+    if filter_plicit_type != "all":
+        filehead += f"_{filter_plicit_type}"
     filehead += f"_{model}"
 
     with open(os.path.join(output_dir, f"{filehead}.json"), "w") as f:
         json.dump(result, f, indent=4, sort_keys=True, separators=(",", ": "))
 
+    # -------------------------------
+    # Save CSV with correct columns
+    # -------------------------------
+    required_cols = [
+        "example_id",
+        "text",
+        "tagged_text",
+        "output",
+        "true_cause",
+        "true_effect",
+        "pred_cause",
+        "pred_effect",
+    ]
+
+    for col in required_cols:
+        if col not in ds_output.column_names:
+            ds_output = ds_output.add_column(col, [""] * len(ds_output))
+
+    ds_output = ds_output.select([ds_output.column_names.index(c) for c in required_cols])
     ds_output.to_csv(os.path.join(output_dir, f"{filehead}.csv"))
