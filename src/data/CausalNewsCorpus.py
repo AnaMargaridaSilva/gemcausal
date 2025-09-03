@@ -61,7 +61,7 @@ def get_bio(text_w_pairs: str) -> tuple[list[str], list[str]]:
 
     return tokens, ce_tags
 
-
+"""
 def get_bio_for_datasets(example: dict[str, Any]) -> dict[str, Any]:
     tokens: list[str]
     tags: list[str]
@@ -77,6 +77,21 @@ def get_bio_for_datasets(example: dict[str, Any]) -> dict[str, Any]:
         .replace("</ARG1>", SpanTags.effect_end)
     )
     return example
+"""
+
+def get_bio_for_datasets(example):
+    tokens, tags = get_bio(example["causal_text_w_pairs"])
+    example["tokens"] = tokens
+    example["tags"] = tags
+    example["tagged_text"] = (
+        example["causal_text_w_pairs"]
+        .replace("<ARG0>", SpanTags.cause_begin)
+        .replace("</ARG0>", SpanTags.cause_end)
+        .replace("<ARG1>", SpanTags.effect_begin)
+        .replace("</ARG1>", SpanTags.effect_end)
+    )
+    # Return all original columns plus new ones
+    return {**example}
 
 
 def extract_all_causes_effects(text: str) -> tuple[list[str], list[str]]:
