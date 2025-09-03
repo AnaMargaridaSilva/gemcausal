@@ -292,9 +292,12 @@ def predict(args: Namespace) -> None:
         "pred_effect",
     ]
 
+
+
     for col in required_cols:
         if col not in ds_output.column_names:
             ds_output = ds_output.add_column(col, [""] * len(ds_output))
-
-    ds_output = ds_output.select([ds_output.column_names.index(c) for c in required_cols])
+    
+    # Keep only the required columns
+    ds_output = ds_output.select_columns(required_cols)
     ds_output.to_csv(os.path.join(output_dir, f"{filehead}.csv"))
