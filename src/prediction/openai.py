@@ -208,7 +208,10 @@ def predict(args: Namespace) -> None:
         example["pred_effect"] = remove_marks(effect_spans)
         return example
 
+    print("Columns before mapping:", ds_test.column_names)
+
     ds_output = ds_test.map(extract_span)
+    
 
     # -------------------- Compute metrics -------------------- #
     result = {}
