@@ -206,4 +206,8 @@ def load_data_CNC(
     ds_train = dsd_train_val["train"]
     ds_valid = dsd_train_val["test"]
 
-    return ds_train, ds_valid, ds_test
+    return DatasetDict({
+            "train": ds_train,
+            "valid": ds_valid,
+            "test": ds_test
+        })
