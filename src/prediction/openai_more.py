@@ -34,14 +34,29 @@ from .. import (
 from ..data.load_data import load_data
 from ..setting import assert_filter_option
 
+def api_key_validation() -> None:
+    api_key: str = os.environ["GEMINI_API_KEY"]
+    assert api_key != "", "Environment variable GEMINI_API_KEY must be set to use Gemini models"
+    genai.configure(api_key=api_key)
 
-import re
-from typing import List, Tuple, Dict, Any
-from datasets import Dataset
 
-# -------------------------------
-# Updated span extraction with original function name
-# -------------------------------
+def read_template(path: str) -> dict[str, str]:
+    with open(path, "r") as f:
+        template: dict[str, str] = json.load(f)
+    required_keys: set[str] = {
+        "task_description",
+        "header_example",
+        "format_text",
+        "format_class",
+        "question",
+    }
+    left_keys: set[str] = required_keys - set(template.keys())
+    assert len(left_keys) == 0, f"Following keys are not in template: {left_keys}"
+    return template
+
+
+
+# Updated 
 def extract_spans_with_mark(text_w_pairs: List[str]) -> Tuple[str, str]:
     """
     Extracts all <ARG0> and <ARG1> spans from a list of causal text pairs.
@@ -54,10 +69,16 @@ def extract_spans_with_mark(text_w_pairs: List[str]) -> Tuple[str, str]:
         effects.extend(re.findall(r"<ARG1>(.*?)</ARG1>", pair))
     return " ".join(causes), " ".join(effects)
 
+@retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
+def completion_with_backoff(model: str, prompt: str):
+    model_obj = genai.GenerativeModel(model)
+    response = model_obj.generate_content(prompt, generation_config={"temperature": 0})
+    return response
 
-# -------------------------------
-# Updated extract_span function with original name
-# -------------------------------
+
+
+
+# Updated 
 def extract_span(example: Dict[str, Any]) -> Dict[str, Any]:
     """
     Extracts true and predicted causes/effects for a test example.
