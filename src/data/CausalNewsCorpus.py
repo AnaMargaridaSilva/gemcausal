@@ -91,7 +91,8 @@ def get_bio_for_datasets(example):
         .replace("</ARG1>", SpanTags.effect_end)
     )
     # Return all original columns plus new ones
-    return {**example}
+    example["causal_text_w_pairs"] = example["causal_text_w_pairs"]
+    return example
 
 
 def extract_all_causes_effects(text: str) -> tuple[list[str], list[str]]:
