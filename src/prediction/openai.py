@@ -143,12 +143,13 @@ def predict(args: Namespace) -> None:
 
     # Load dataset
     dsd: DatasetDict = load_data(
-        dataset_enum=dataset_enum,
         task_enum=task_enum,
+        dataset_enum=dataset_enum,
         sentencetype_enum=SentenceType[filter_num_sent],
         numcausal_enum=NumCausalType[filter_num_causal],
         plicit_enum=PlicitType[filter_plicit_type],
         data_dir=args.data_dir,
+        test_samples=args.test_samples,
         seed=seed,
     )
 
