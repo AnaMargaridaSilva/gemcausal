@@ -107,9 +107,11 @@ def compute_metrics(
         result[f"accuracy_{i}"] = arr[i, i]
     return result
 
+"""
 def remove_marks(text: str) -> str:
     extracted = re.findall(r"\[([^\]]+)\]", text)
     return " ".join(extracted) if extracted else text
+"""
 
 def remove_marks(text: str) -> str:
     extracted = re.findall(r"\[([^\]]+)\]", text)
