@@ -56,6 +56,24 @@ def read_template(path: str) -> dict[str, str]:
     assert len(left_keys) == 0, f"Following keys are not in template: {left_keys}"
     return template
 
+def remove_signal_tags(text: str) -> str:
+    """
+    Remove any <SIG...>...</SIG...> tags from a text string.
+    """
+    return re.sub(r"<SIG\d+>(.*?)</SIG\d+>", r"\1", text)
+
+def split_relation(rel: str) -> Tuple[str, str]:
+    """
+    Extract cause and effect from 'RelationN: [cause] [effect]'
+    and remove signal tags if present.
+    """
+    m = re.match(r"Relation\d+: \[(.*?)\] \[(.*?)\]", rel)
+    if m:
+        cause = remove_signal_tags(m.group(1).strip())
+        effect = remove_signal_tags(m.group(2).strip())
+        return cause, effect
+    return "", ""
+
 def extract_pairs_with_mark(text: str) -> List[Tuple[str, str]]:
     tagged = re.findall(r"<([ce])(\d*)>(.*?)</\1\2>", text, flags=re.DOTALL)
     by_id: Dict[str, Dict[str, str]] = {}
@@ -204,8 +222,16 @@ def predict(args: Namespace) -> None:
         total_relation_exact += len(set(true_rel) & set(pred_rel))
 
         def split_relation(rel: str) -> Tuple[str, str]:
+            """
+            Extract cause and effect from 'RelationN: [cause] [effect]'
+            and remove signal tags if present.
+            """
             m = re.match(r"Relation\d+: \[(.*?)\] \[(.*?)\]", rel)
-            return (m.group(1), m.group(2)) if m else ("", "")
+            if m:
+                cause = remove_signal_tags(m.group(1).strip())
+                effect = remove_signal_tags(m.group(2).strip())
+                return cause, effect
+            return "", ""
 
         t_c, t_e = zip(*map(split_relation, true_rel)) if true_rel else ([], [])
         p_c, p_e = zip(*map(split_relation, pred_rel)) if pred_rel else ([], [])
@@ -215,6 +241,7 @@ def predict(args: Namespace) -> None:
         all_pred_causes.extend(p_c)
         all_pred_effects.extend(p_e)
 
+    
     # Compute cause/effect F1
     cause_metrics = [compute_f1_score(t, p) for t, p in zip(all_true_causes, all_pred_causes)]
     effect_metrics = [compute_f1_score(t, p) for t, p in zip(all_true_effects, all_pred_effects)]
