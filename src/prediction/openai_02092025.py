@@ -1,3 +1,6 @@
+# ESTAVA A FUNCTIONAR , MAS JUNTAVA AS CAUSAS E OS EFEITOS PREVISTAS TODAS NUMA STRING
+# No openai_03092025 separa por ;
+
 import datetime
 import time
 import itertools
