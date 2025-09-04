@@ -1,3 +1,5 @@
+# ESTAVA A FUNCIONAR PARA O PROMPT ANTIGO
+
 import datetime
 import time
 import itertools
