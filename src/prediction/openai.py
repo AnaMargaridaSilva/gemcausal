@@ -62,17 +62,6 @@ def remove_signal_tags(text: str) -> str:
     """
     return re.sub(r"<SIG\d+>(.*?)</SIG\d+>", r"\1", text)
 
-def split_relation(rel: str) -> Tuple[str, str]:
-    """
-    Extract cause and effect from 'RelationN: [cause] [effect]'
-    and remove signal tags if present.
-    """
-    m = re.match(r"Relation\d+: \[(.*?)\] \[(.*?)\]", rel)
-    if m:
-        cause = remove_signal_tags(m.group(1).strip())
-        effect = remove_signal_tags(m.group(2).strip())
-        return cause, effect
-    return "", ""
 
 def extract_pairs_with_mark(text: str) -> List[Tuple[str, str]]:
     tagged = re.findall(r"<([ce])(\d*)>(.*?)</\1\2>", text, flags=re.DOTALL)
