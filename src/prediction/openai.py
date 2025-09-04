@@ -58,9 +58,10 @@ def read_template(path: str) -> dict[str, str]:
 
 def remove_signal_tags(text: str) -> str:
     """
-    Remove any <SIG...>...</SIG...> tags from a text string.
+    Remove any <SIG...>...</SIG...> or <SIG...>...</\/SIG...> tags from a text string.
     """
-    return re.sub(r"<SIG\d+>(.*?)</SIG\d+>", r"\1", text)
+    # Match <SIG0>...</SIG0> and <SIG0>...</\/SIG0>
+    return re.sub(r"<SIG\d+>(.*?)<\/?SIG\d+>", r"\1", text)
 
 
 def extract_pairs_with_mark(text: str) -> List[Tuple[str, str]]:
@@ -190,10 +191,24 @@ def predict(args: Namespace) -> None:
     ds_test = ds_test.add_column("output", lst_output)
 
     # -------------------- Extract predicted/true relations -------------------- #
+    """
     def extract_span(example: Dict[str, Any]) -> Dict[str, Any]:
         true_causes, true_effects = extract_all_causes_effects(example["causal_text_w_pairs"])
         true_relations = [f"Relation{i+1}: [{c}] [{e}]" for i, (c, e) in enumerate(zip(true_causes, true_effects))]
         pred_relations = [line.strip() for line in example["output"].splitlines() if line.strip()]
+        example["true_relations"] = true_relations
+        example["pred_relations"] = pred_relations
+        return example
+    """
+    def extract_span(example: Dict[str, Any]) -> Dict[str, Any]:
+        true_causes, true_effects = extract_all_causes_effects(example["causal_text_w_pairs"])
+        # Remove signal tags here
+        true_causes = [remove_signal_tags(c) for c in true_causes]
+        true_effects = [remove_signal_tags(e) for e in true_effects]
+        true_relations = [f"Relation{i+1}: [{c}] [{e}]" for i, (c, e) in enumerate(zip(true_causes, true_effects))]
+    
+        pred_relations = [remove_signal_tags(line.strip()) for line in example["output"].splitlines() if line.strip()]
+    
         example["true_relations"] = true_relations
         example["pred_relations"] = pred_relations
         return example
