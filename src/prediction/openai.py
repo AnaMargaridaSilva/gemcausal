@@ -196,30 +196,33 @@ def predict(args: Namespace) -> None:
 
     # -------------------- Extract predicted/true relations -------------------- #
     def extract_span(example: Dict[str, Any]) -> Dict[str, Any]:
+        # --- Gold ---
         true_causes, true_effects = extract_all_causes_effects(example["causal_text_w_pairs"])
         true_causes = [remove_signal_tags(c).strip(" .") for c in true_causes]
         true_effects = [remove_signal_tags(e).strip(" .") for e in true_effects]
-    
         true_relations = [
             f"Relation{i+1}: [{c}] [{e}]"
             for i, (c, e) in enumerate(zip(true_causes, true_effects))
         ]
     
-        # Normalize predictions
+        # --- Predictions ---
         pred_relations: List[str] = []
+        rel_counter = 1  # keep a single counter for all pairs in this example
         for line in example["output"].splitlines():
             line = remove_signal_tags(line.strip())
             if not line:
                 continue
     
-            # Extract tagged cause/effect spans regardless of order
+            # Extract tagged cause/effect spans
             causes = re.findall(r"<c>(.*?)</c>", line)
             effects = re.findall(r"<e>(.*?)</e>", line)
     
-            for i, (c, e) in enumerate(zip(causes, effects)):
+            # Zip and enumerate using the global counter
+            for c, e in zip(causes, effects):
                 c = c.strip(" .")
                 e = e.strip(" .")
-                pred_relations.append(f"Relation{i+1}: [{c}] [{e}]")
+                pred_relations.append(f"Relation{rel_counter}: [{c}] [{e}]")
+                rel_counter += 1  # increment globally
     
         example["true_relations"] = true_relations
         example["pred_relations"] = pred_relations
