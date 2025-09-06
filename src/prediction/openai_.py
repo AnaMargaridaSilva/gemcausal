@@ -1,4 +1,4 @@
-
+# o final que está a funcionar: final do dia 04/09/2025
 
 import datetime
 import time
@@ -83,6 +83,7 @@ def extract_pairs_with_mark(text: str) -> List[Tuple[str, str]]:
     return pairs
 
 def extract_all_causes_effects(text_w_pairs: str) -> Tuple[List[str], List[str]]:
+    # reading gold labels
     cause_pattern = re.compile(r"<ARG0>(.*?)</ARG0>")
     effect_pattern = re.compile(r"<ARG1>(.*?)</ARG1>")
     causes = [m.group(1).strip() for m in cause_pattern.finditer(text_w_pairs)]
