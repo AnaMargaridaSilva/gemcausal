@@ -181,7 +181,7 @@ def predict(args: Namespace) -> None:
 
     # -------------------- Inference -------------------- #
     logger.info("Inference starts")
-    batch_size = 5
+    batch_size = 8
     lst_output: list[str] = []
 
     for i in tqdm(range(0, len(ds_test), batch_size)):
