@@ -180,6 +180,7 @@ def predict(args: Namespace) -> None:
     ds_test = ds_test.map(format_prompt)
 
     # -------------------- Inference -------------------- #
+    """
     logger.info("Inference starts")
     batch_size = 8
     lst_output: list[str] = []
@@ -191,6 +192,29 @@ def predict(args: Namespace) -> None:
         if i + batch_size < len(ds_test):
             time.sleep(60)
 
+    logger.info("Inference ends")
+    """
+    
+
+    logger.info("Inference starts")
+    batch_size = 8
+    lst_output: list[str] = []
+    
+    for i in tqdm(range(0, len(ds_test), batch_size)):
+        batch_prompts = ds_test["prompt"][i:i + batch_size]
+        batch_results = [completion_with_backoff(model, p).text for p in batch_prompts]
+    
+        # add to running list
+        lst_output.extend(batch_results)
+    
+        # save progress after each batch
+        progress_file = os.path.join(output_dir, "predictions_so_far.json")
+        with open(progress_file, "w") as f:
+            json.dump(lst_output, f, indent=2)
+    
+        if i + batch_size < len(ds_test):
+            time.sleep(60)
+    
     logger.info("Inference ends")
     ds_test = ds_test.add_column("output", lst_output)
 
