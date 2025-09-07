@@ -194,23 +194,29 @@ def predict(args: Namespace) -> None:
 
     logger.info("Inference ends")
     """
-    
 
+    
     logger.info("Inference starts")
     batch_size = 8
     lst_output: list[str] = []
+    
+    # checkpoint file (line-by-line JSON)
+    checkpoint_file = os.path.join(output_dir, "outputs_checkpoint.jsonl")
+    open(checkpoint_file, "w").close()  # clear previous file
     
     for i in tqdm(range(0, len(ds_test), batch_size)):
         batch_prompts = ds_test["prompt"][i:i + batch_size]
         batch_results = [completion_with_backoff(model, p).text for p in batch_prompts]
     
-        # add to running list
+        # add to full list for final saving
         lst_output.extend(batch_results)
     
-        # save progress after each batch
-        progress_file = os.path.join(output_dir, "predictions_so_far.json")
-        with open(progress_file, "w") as f:
-            json.dump(lst_output, f, indent=2)
+        # save each output individually as JSONL (with example_id)
+        for j, out in enumerate(batch_results):
+            idx = i + j
+            example_output = {"example_id": idx, "output": out}
+            with open(checkpoint_file, "a") as f:
+                f.write(json.dumps(example_output, ensure_ascii=False) + "\n")
     
         if i + batch_size < len(ds_test):
             time.sleep(60)
