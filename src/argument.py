@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 
 from . import DatasetType, NumCausalType, PlicitType, SentenceType, TaskType
-from .prediction import predict_hf_encoder, predict_openai
+from .prediction import predict_hf_encoder, predict_gemini
 
 
 def add_argument_common(parser: ArgumentParser) -> None:
@@ -30,7 +30,7 @@ def add_argument_common(parser: ArgumentParser) -> None:
     parser.add_argument(
         "--output_dir",
         required=True,
-        help="Output directory for json and csv (OpenAI model) ",
+        help="Output directory for json and csv (gemini model) ",
     )
     parser.add_argument(
         "--filter_num_sent",
@@ -73,7 +73,7 @@ def add_argument_hf_encoder(parser: ArgumentParser) -> None:
     parser.add_argument("--max_epochs", type=int, default=10)
 
 
-def add_argument_openai(parser: ArgumentParser) -> None:
+def add_argument_gemini(parser: ArgumentParser) -> None:
     """
     parser.add_argument(
         "--model",
@@ -117,10 +117,10 @@ def main() -> None:
     add_argument_hf_encoder(parser_hf_encoder)
     parser_hf_encoder.set_defaults(func=predict_hf_encoder)
 
-    parser_openai = subparsers.add_parser("openai", help="see `openai --help`")
-    add_argument_common(parser_openai)
-    add_argument_openai(parser_openai)
-    parser_openai.set_defaults(func=predict_openai)
+    parser_gemini = subparsers.add_parser("gemini", help="see `gemini --help`")
+    add_argument_common(parser_gemini)
+    add_argument_gemini(parser_gemini)
+    parser_gemini.set_defaults(func=predict_gemini)
 
     args = parent_parser.parse_args()
     args.func(args)
