@@ -92,7 +92,7 @@ def add_argument_gemini(parser: ArgumentParser) -> None:
     parser.add_argument(
         "--shot",
         help="Number of shots",
-        choices=[0, 1, 3, 5, 10, 30, 40, 50],
+        choices=[0, 1, 2, 3, 5, 10, 30, 40, 50],
         required=True,
         type=int,
     )
