@@ -164,12 +164,16 @@ def predict(args: Namespace) -> None:
                 """
                 for j, (c, e) in enumerate(pairs, 1):
                     annotation += f"Relation{j}: <c>{c}</c> <e>{e}</e>\n"
-                """      
+                """  
+                """
                 for j, (c, e) in enumerate(pairs, 1):
                     text = dsd_icl[i]["text"]
                     # Replace spans inline (careful with multiple matches!)
                     inline = text.replace(c, f"<c>{c}</c>", 1).replace(e, f"<e>{e}</e>", 1)
                     annotation += f"Relation{j}: {inline}\n"
+                """
+                for j, rel in enumerate(pairs_text, 1):  # pairs_text already has full <c> and <e> inline
+                    annotation += f"Relation{j}: {rel}\n"
                 annotation += "\n"
             else:
                 cause_spans, effect_spans = extract_all_causes_effects(dsd_icl[i]["tagged_text"])
