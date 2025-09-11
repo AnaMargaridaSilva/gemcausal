@@ -159,8 +159,11 @@ def predict(args: Namespace) -> None:
         )
         for i in range(shot):
             annotation += template["format_text"].format(dsd_icl[i]["text"])
+            annotation += dsd_icl[i]["causal_text_w_pairs"].strip() + "\n\n"  # add extra newline after each example
+            """
             if wants_relations:
                 pairs = extract_pairs_with_mark(dsd_icl[i]["tagged_text"])
+            """
                 """
                 for j, (c, e) in enumerate(pairs, 1):
                     annotation += f"Relation{j}: <c>{c}</c> <e>{e}</e>\n"
@@ -172,12 +175,16 @@ def predict(args: Namespace) -> None:
                     inline = text.replace(c, f"<c>{c}</c>", 1).replace(e, f"<e>{e}</e>", 1)
                     annotation += f"Relation{j}: {inline}\n"
                 """
+                """
                 for j, rel in enumerate(pairs_text, 1):  # pairs_text already has full <c> and <e> inline
                     annotation += f"Relation{j}: {rel}\n"
                 annotation += "\n"
+                """
+            """
             else:
                 cause_spans, effect_spans = extract_all_causes_effects(dsd_icl[i]["tagged_text"])
                 annotation += template["format_class"].format(cause_spans, effect_spans)
+            """
 
         def format_prompt(example: dict[str, Any]) -> dict[str, Any]:
             prompt: str = template["task_description"]
