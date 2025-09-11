@@ -179,6 +179,9 @@ def predict(args: Namespace) -> None:
     ds_test: Dataset = dsd["test"]
     ds_test = ds_test.map(format_prompt)
 
+    for i in range(2):
+        print(f"\n--- Prompt {i} ---\n{ds_test[i]['prompt']}")
+
     # -------------------- Inference -------------------- #
     """
     logger.info("Inference starts")
