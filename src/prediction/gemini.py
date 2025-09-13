@@ -204,8 +204,8 @@ def predict(args: Namespace) -> None:
 
     
     logger.info("Inference starts")
-    #batch_size = 8
-    batch_size = 1
+    batch_size = 8
+    #batch_size = 1
     lst_output: list[str] = []
     
     # checkpoint file (line-by-line JSON)
