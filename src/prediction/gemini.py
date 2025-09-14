@@ -202,10 +202,10 @@ def predict(args: Namespace) -> None:
     logger.info("Inference ends")
     """
 
-    """
+    
     logger.info("Inference starts")
-    #batch_size = 8 # para o gemini-flash
-    batch_size = 6
+    batch_size = 8 # para o gemini-flash
+    #batch_size = 6
     #batch_size = 1 # para o pro
     lst_output: list[str] = []
     
@@ -232,6 +232,7 @@ def predict(args: Namespace) -> None:
     
     logger.info("Inference ends")
     ds_test = ds_test.add_column("output", lst_output)
+    
     """
 
     logger.info("Inference starts")
@@ -267,6 +268,7 @@ def predict(args: Namespace) -> None:
     
     logger.info("Inference ends")
     ds_test = ds_test.add_column("output", lst_output)
+    """
 
     # -------------------- Extract predicted/true relations -------------------- #
     def extract_span(example: Dict[str, Any]) -> Dict[str, Any]:
