@@ -202,7 +202,7 @@ def predict(args: Namespace) -> None:
     logger.info("Inference ends")
     """
 
-    
+    """
     logger.info("Inference starts")
     #batch_size = 8 # para o gemini-flash
     batch_size = 6
@@ -229,6 +229,41 @@ def predict(args: Namespace) -> None:
     
         if i + batch_size < len(ds_test):
             time.sleep(60)
+    
+    logger.info("Inference ends")
+    ds_test = ds_test.add_column("output", lst_output)
+    """
+
+    logger.info("Inference starts")
+
+    batch_size = 8
+    lst_output: list[str] = []
+    
+    checkpoint_file = os.path.join(output_dir, "outputs_checkpoint.jsonl")
+    open(checkpoint_file, "w").close()
+    
+    # Requests per minute allowed (free tier = 10)
+    MAX_REQUESTS_PER_MIN = 10
+    DELAY = 60 / MAX_REQUESTS_PER_MIN  # seconds between calls
+    
+    for i in tqdm(range(0, len(ds_test), batch_size)):
+        batch_prompts = ds_test["prompt"][i:i + batch_size]
+        batch_results = []
+    
+        for j, p in enumerate(batch_prompts):
+            result = completion_with_backoff(model, p).text
+            batch_results.append(result)
+    
+            # write checkpoint immediately
+            idx = i + j
+            example_output = {"example_id": idx, "output": result}
+            with open(checkpoint_file, "a") as f:
+                f.write(json.dumps(example_output, ensure_ascii=False) + "\n")
+    
+            # sleep between each call
+            time.sleep(DELAY)
+    
+        lst_output.extend(batch_results)
     
     logger.info("Inference ends")
     ds_test = ds_test.add_column("output", lst_output)
