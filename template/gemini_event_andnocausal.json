@@ -1,0 +1,7 @@
+{
+    "task_description": "This is an Event Head Word Causal Relation Detection task.\nA causal relation is a relationship between two events, where the occurrence of a cause results in the occurrence of an effect.\nIn this task, you must identify only the head word of the cause and effect events, not the entire span.\nPlease follow these rules, ensuring no irrelevant outputs:\n1. Insert <c> before the word where the cause head occurs and </c> after it.\n2. Insert <e> before the word where the effect head occurs and </e> after it.\n3. If there is an explicit causal signal, insert <s> before the first word of the signal and </s> after the last word.\n4. If no causal relation is present in the text, return that text unchanged (without tags).\n5. If there are multiple relations, use the following format:\nRelation1: [full text with tags wrapping the first cause and effect; include signal tags only if it is present]\nRelation2: [full text with tags wrapping the second cause and effect; include signal tags only if it is present]\nRelation3: [full text with tags wrapping the third cause and effect; include signal tags only if it is present]\n\n",
+    "header_example": "Annotation Examples:\n",
+    "format_text": "Text: {}\n",
+    "format_class": "Relation{}: {}\n",
+    "question": "According to the policy above, please add the appropriate tags in the following text.\n"
+}
