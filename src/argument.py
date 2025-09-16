@@ -83,7 +83,7 @@ def add_argument_gemini(parser: ArgumentParser) -> None:
     """
     parser.add_argument(
         "--model",
-        choices=["gemini-1.5-pro", "gemini-1.5-flash", "gemini-2.5-flash", "gemini-2.5-pro"],
+        choices=["gemini-1.5-pro", "gemini-1.5-flash", "gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.5-pro"],
         required=True,
     )
     parser.add_argument(
