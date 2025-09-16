@@ -166,7 +166,7 @@ def _load_data_CNC_span_detection(data_path: str) -> Dataset:
 def _load_data_CNC_span_detection(data_path: str) -> Dataset:
     df: pd.DataFrame = pd.read_csv(data_path)
     # Keep only rows where num_rs > 0
-    # df = df[df["num_rs"] > 0]
+    df = df[df["num_rs"] > 0]
     # Ensure the column exists
     if "causal_text_w_pairs" not in df.columns:
         df["causal_text_w_pairs"] = ""  # or some default empty list/string
