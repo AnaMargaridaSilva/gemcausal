@@ -205,7 +205,7 @@ def predict(args: Namespace) -> None:
     
     logger.info("Inference starts")
     #batch_size = 8 # para o gemini-flash
-    batch_size = 6
+    batch_size = 5
     #batch_size = 1 # para o pro
     lst_output: list[str] = []
     
@@ -228,7 +228,7 @@ def predict(args: Namespace) -> None:
                 f.write(json.dumps(example_output, ensure_ascii=False) + "\n")
     
         if i + batch_size < len(ds_test):
-            time.sleep(90)
+            time.sleep(60)
     
     logger.info("Inference ends")
     ds_test = ds_test.add_column("output", lst_output)
