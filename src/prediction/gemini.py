@@ -228,7 +228,7 @@ def predict(args: Namespace) -> None:
                 f.write(json.dumps(example_output, ensure_ascii=False) + "\n")
     
         if i + batch_size < len(ds_test):
-            time.sleep(60)
+            time.sleep(90)
     
     logger.info("Inference ends")
     ds_test = ds_test.add_column("output", lst_output)
